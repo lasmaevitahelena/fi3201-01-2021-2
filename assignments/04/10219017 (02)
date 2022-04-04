@@ -1,0 +1,45 @@
+omega = 1
+def dY_dx(Y, t=0):
+    """ Return the gradient of y1 and y2"""
+    return np.array([Y[1] / mu, - (omega ** 2) * rho * Y[0]])
+
+from scipy import integrate
+
+Y = np.sin(2 * np.pi * (x - 0.01 * i))
+
+y1, y2 = Y.T
+
+# set up the figure, the axis, and the plot element we want to animate
+fig = plt.figure()
+ax = fig.add_subplot(111, autoscale_on=False, xlim=(0,15), ylim=(-10,10))
+ax.grid()
+
+line1, = ax.plot([], [], 'o', ms=2)
+line2, = ax.plot([], [], '-', lw=2)
+time_template = 'time = %.lfs'
+time_text = ax.text(0.05, 0.9, '', transform=ax.transAxes)
+
+# initialisation function: plot the background of each frame
+def init():
+    line1.set_data([], [])
+    line2.set_data([], [])
+    time_text.set_text('')
+    return line1, line2, time_text
+
+# animation function: this is called sequentially
+def animate(i):
+    x = np.linspace(0, 2, 1000)
+	y = np.sin(2*np.pi*(x-0.01*i))
+    y1,y2 = Y.T
+
+    line1.set_data(x, y1)
+    line2.set_data(x, y2)
+
+    time_text.set_text(time_template%t)
+    return line1, line2, time_text
+
+# call the animator. blit=True means only re-draw the parts that have changed
+ani = animation.FuncAnimation(fig, animate, np.arange(1, len(Y)), interval=25, blit=True, init_func=init)
+
+#ani.save('waveEquation.mp4', fps=15)
+plt.show()
